@@ -1,4 +1,4 @@
-package model;
+
 
 import javax.swing.JFrame;
 
@@ -11,6 +11,9 @@ public class Main {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setLocationRelativeTo(null);
         window.setResizable(false);
+
+        GamePanel gamePanel = new GamePanel();
+        window.add(gamePanel);
 
         window.setVisible(true);
     }
