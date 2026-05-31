@@ -5,6 +5,8 @@ public class Player {
     private int y;
     private int width;
     private int height;
+    // Tốc di chuyển
+    private int speed = 5;
 
     public Player(int x, int y, int width, int height) {
         this.x = x;
@@ -23,5 +25,12 @@ public class Player {
     }
     public int getHeight() {
         return height;
+    }
+    // Hàm di chuyển nv
+     public void moveLeft() {
+        x -= speed;
+    }
+    public void moveRight() {
+        x += speed;
     }
 }
