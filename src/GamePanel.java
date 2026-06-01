@@ -2,28 +2,34 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import model.Player;
+import model.Platform;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import java.util.ArrayList;
+
 public class GamePanel extends JPanel implements KeyListener{
 
     private Player player;
+    private ArrayList<Platform> platforms;
 
     private boolean leftPressed = false;
     private boolean rightPressed = false;
-    // 
-    private int groundY = 500;
-
 
     public GamePanel() {
         this.setBackground(Color.BLACK);
-        player = new Player(100, 100, 50, 50);
-
         this.setFocusable(true);
         this.addKeyListener(this);
+
+        player = new Player(100, 100, 50, 50);
+
+        platforms = new ArrayList<>();
+        //măt đất
+        platforms.add(new Platform(0, 600, 900, 100));
+
         //Hàm test di chuyển nva
         Timer timer = new Timer(16, e -> {
             update();
@@ -31,6 +37,7 @@ public class GamePanel extends JPanel implements KeyListener{
         });
         timer.start();
     }
+    // Hàm cập nhật 
     private void update() {
         if (leftPressed) {
             player.moveLeft();
@@ -38,9 +45,22 @@ public class GamePanel extends JPanel implements KeyListener{
         if (rightPressed) {
             player.moveRight();
         }
-          player.applyGravity();
-        if (player.getBottom() >= groundY) {
-            player.landOnGround(groundY);
+        player.applyGravity();
+        checkPlatformCollision();
+    }  
+    // Check va chạm với platform
+    private void checkPlatformCollision() {
+        for (Platform platform : platforms) {
+            // kiểm tra coi nhân vật có đang chạm vào platform hay ko
+            boolean isTouchingPlatform =
+                player.getBottom() >= platform.getY()
+                    && player.getBottom() <= platform.getY() + 20
+                    && player.getX() + player.getWidth() > platform.getX()
+                    && player.getX() < platform.getX() + platform.getWidth();
+            //Nếu nv đụng vào platform thì sẽ đứng trên nó
+            if (isTouchingPlatform) {
+                player.landOnGround(platform.getY());
+            }
         }
     }
     // Vẽ nhân vật
@@ -48,7 +68,7 @@ public class GamePanel extends JPanel implements KeyListener{
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         drawPlayer(g);
-        drawGround(g);
+        drawPlatforms(g);
     }
     private void drawPlayer(Graphics g){
         g.setColor(Color.RED);
@@ -59,10 +79,17 @@ public class GamePanel extends JPanel implements KeyListener{
                 player.getHeight()
         );
     }
-    // Vẽ mặt đất
-    private void drawGround(Graphics g) {
+    //Vẽ platform
+    private void drawPlatforms(Graphics g) {
         g.setColor(Color.GREEN);
-        g.fillRect(0, groundY, getWidth(), getHeight() - groundY);
+        for (Platform platform : platforms) {
+            g.fillRect(
+                    platform.getX(),
+                    platform.getY(),
+                    platform.getWidth(),
+                    platform.getHeight()
+            );
+        }
     }
     // Bấm nút
     @Override
