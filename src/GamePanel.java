@@ -29,7 +29,11 @@ public class GamePanel extends JPanel implements KeyListener{
         platforms = new ArrayList<>();
         //măt đất
         platforms.add(new Platform(0, 600, 900, 100));
-
+        // các bục nhỏ
+        platforms.add(new Platform(200, 400, 150, 25));
+        platforms.add(new Platform(430, 320, 150, 25));
+        platforms.add(new Platform(620, 240, 120, 25));
+        
         //Hàm test di chuyển nva
         Timer timer = new Timer(16, e -> {
             update();
@@ -47,19 +51,32 @@ public class GamePanel extends JPanel implements KeyListener{
         }
         player.applyGravity();
         checkPlatformCollision();
+        player.limitInScreen(getWidth());
     }  
     // Check va chạm với platform
     private void checkPlatformCollision() {
         for (Platform platform : platforms) {
-            // kiểm tra coi nhân vật có đang chạm vào platform hay ko
-            boolean isTouchingPlatform =
-                player.getBottom() >= platform.getY()
-                    && player.getBottom() <= platform.getY() + 20
-                    && player.getX() + player.getWidth() > platform.getX()
-                    && player.getX() < platform.getX() + platform.getWidth();
-            //Nếu nv đụng vào platform thì sẽ đứng trên nó
-            if (isTouchingPlatform) {
+            boolean horizontalOverlap =
+                    player.getX() + player.getWidth() > platform.getX()
+                            && player.getX() < platform.getX() + platform.getWidth();
+            if (!horizontalOverlap) {
+                continue;
+            }
+            // Player rơi từ trên xuống platform
+            boolean landingOnPlatform =
+                    player.getBottom() >= platform.getY()
+                            && player.getBottom() <= platform.getY() + 20;
+
+            if (landingOnPlatform) {
                 player.landOnGround(platform.getY());
+            }
+            // Player nhảy từ dưới lên, đầu đụng đáy platform
+            boolean hittingPlatformFromBelow =
+                    player.getTop() <= platform.getY() + platform.getHeight()
+                            && player.getTop() >= platform.getY() + platform.getHeight() - 20;
+            if (hittingPlatformFromBelow) {
+                player.setY(platform.getY() + platform.getHeight());
+                player.setVelocityY(10);
             }
         }
     }

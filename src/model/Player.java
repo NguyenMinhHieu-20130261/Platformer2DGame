@@ -60,4 +60,22 @@ public class Player {
     public int getBottom() {
         return y + height;
     }
+    public int getTop(){
+        return y ;
+    }
+    public void setY(int y) {
+        this.y = y;
+    }
+    public void setVelocityY(double velocityY) {
+        this.velocityY = velocityY;
+    }
+    // Giới hạn màn hình
+    public void limitInScreen(int screenWidth) {
+    if (x < 0) {
+        x = 0;
+    }
+    if (x + width > screenWidth) {
+        x = screenWidth - width;
+    }
+}
 }
