@@ -11,7 +11,7 @@ public class Player {
     private double velocityY = 0;
     private double gravity = 0.5;
     // Nhảy
-    private double jumpPower = -15;
+    private double jumpPower = -12;
     // biến check coi nv có nằm trên mặt đấy hay ko
     private boolean onGround = false;
 
@@ -21,6 +21,7 @@ public class Player {
         this.width = width;
         this.height = height;
     }
+    // Getters 
     public int getX() {
         return x;
     }
@@ -32,6 +33,19 @@ public class Player {
     }
     public int getHeight() {
         return height;
+    }
+    public int getBottom() {
+        return y + height;
+    }
+    // Setters
+    public void setY(int y) {
+        this.y = y;
+    }
+        public void setX(int x) {
+        this.x = x;
+    }
+    public void setVelocityY(double velocityY) {
+        this.velocityY = velocityY;
     }
     // Hàm di chuyển nv
      public void moveLeft() {
@@ -57,25 +71,13 @@ public class Player {
         velocityY = 0;
         onGround = true;
     }
-    public int getBottom() {
-        return y + height;
-    }
-    public int getTop(){
-        return y ;
-    }
-    public void setY(int y) {
-        this.y = y;
-    }
-    public void setVelocityY(double velocityY) {
-        this.velocityY = velocityY;
-    }
     // Giới hạn màn hình
     public void limitInScreen(int screenWidth) {
-    if (x < 0) {
-        x = 0;
+        if (x < 0) {
+            x = 0;
+        }
+        if (x + width > screenWidth) {
+            x = screenWidth - width;
+        }
     }
-    if (x + width > screenWidth) {
-        x = screenWidth - width;
-    }
-}
 }

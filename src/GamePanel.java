@@ -28,11 +28,12 @@ public class GamePanel extends JPanel implements KeyListener{
 
         platforms = new ArrayList<>();
         //măt đất
-        platforms.add(new Platform(0, 600, 900, 100));
+        platforms.add(new Platform(0, 600, 1000, 100));
         // các bục nhỏ
-        platforms.add(new Platform(200, 400, 150, 25));
-        platforms.add(new Platform(430, 320, 150, 25));
-        platforms.add(new Platform(620, 240, 120, 25));
+        platforms.add(new Platform(200, 450, 150, 25));
+        platforms.add(new Platform(420, 400, 100, 25));
+        platforms.add(new Platform(620, 240, 120, 25));        
+        platforms.add(new Platform(600, 400, 300, 200));
         
         //Hàm test di chuyển nva
         Timer timer = new Timer(16, e -> {
@@ -55,28 +56,54 @@ public class GamePanel extends JPanel implements KeyListener{
     }  
     // Check va chạm với platform
     private void checkPlatformCollision() {
+        int rightSide = player.getX() + player.getWidth();
+        int leftSide = player.getX();
+        int topSide = player.getY();
+        int bottomSide = player.getY() +player.getHeight();
+
         for (Platform platform : platforms) {
-            boolean horizontalOverlap =
-                    player.getX() + player.getWidth() > platform.getX()
-                            && player.getX() < platform.getX() + platform.getWidth();
-            if (!horizontalOverlap) {
+            // Collision chiều nagng
+            boolean horizontalOverlap = rightSide > platform.getX() 
+                                    && leftSide < platform.getX() + platform.getWidth();
+            // COLLISON chiều dọc            
+            boolean verticalOverlap = bottomSide > platform.getY()
+                                    && topSide < platform.getY() + platform.getHeight();
+            // Nếu không đụng platform thì bỏ qua
+            if (!horizontalOverlap || !verticalOverlap) {
                 continue;
             }
-            // Player rơi từ trên xuống platform
-            boolean landingOnPlatform =
-                    player.getBottom() >= platform.getY()
-                            && player.getBottom() <= platform.getY() + 20;
-
-            if (landingOnPlatform) {
+            // Collision từ trên xuống
+            boolean collisionTop =
+                    bottomSide >= platform.getY()
+                            && bottomSide <= platform.getY() + 20;
+            // Nếu player đụng platform thì set player đứng trên platfomr
+            if (collisionTop) {
                 player.landOnGround(platform.getY());
+                continue;
             }
-            // Player nhảy từ dưới lên, đầu đụng đáy platform
-            boolean hittingPlatformFromBelow =
-                    player.getTop() <= platform.getY() + platform.getHeight()
-                            && player.getTop() >= platform.getY() + platform.getHeight() - 20;
-            if (hittingPlatformFromBelow) {
+            // Collision từ dưới lên
+            boolean collisionBottom =
+                    topSide <= platform.getY() + platform.getHeight()
+                            && topSide >= platform.getY() + platform.getHeight() - 20;
+            // nếu player rơi trúng platform thì set player đứng trên platform
+            if (collisionBottom) {
                 player.setY(platform.getY() + platform.getHeight());
-                player.setVelocityY(10);
+                player.setVelocityY(0);
+                continue;
+            }
+            // Collision 2 bên
+            boolean collisionLeft =
+                    rightSide >= platform.getX()
+                            && leftSide <= platform.getX() + 20;
+            //
+            if (collisionLeft) {
+                player.setX(platform.getX() - player.getWidth());
+            }
+            boolean collisionRight =
+                leftSide <= platform.getX() + platform.getWidth()
+                        && leftSide >= platform.getX() + platform.getWidth() - 20;
+            if (collisionRight) {
+                player.setX(platform.getX() + platform.getWidth());
             }
         }
     }
