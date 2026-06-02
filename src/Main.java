@@ -11,10 +11,14 @@ public class Main {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setLocationRelativeTo(null);
         window.setResizable(false);
+        
+        GameModel model = new GameModel();
+        GamePanel gamePanel = new GamePanel(model);
+        GameController controller = new GameController(model);
 
-        GamePanel gamePanel = new GamePanel();
         window.add(gamePanel);
         window.setVisible(true);
+        gamePanel.addKeyListener(controller);
         gamePanel.requestFocusInWindow();
     }
 }

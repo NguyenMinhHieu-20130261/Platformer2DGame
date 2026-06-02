@@ -1,0 +1,109 @@
+import java.util.ArrayList;
+
+import model.Platform;
+import model.Player;
+
+public class GameModel {
+    private Player player;
+    private ArrayList<Platform> platforms;
+
+    private boolean leftPressed = false;
+    private boolean rightPressed = false;
+
+    public GameModel() {
+        player = new Player(100, 100, 50, 50);
+
+        platforms = new ArrayList<>();
+        //măt đất
+        platforms.add(new Platform(0, 600, 1000, 100));
+        // các bục nhỏ
+        platforms.add(new Platform(200, 450, 150, 25));
+        platforms.add(new Platform(420, 400, 100, 25));
+        platforms.add(new Platform(620, 240, 120, 25));        
+        platforms.add(new Platform(600, 400, 300, 200));
+    }
+    // Hàm cập nhật 
+    public void update(int screenWidth) {
+        if (leftPressed) {
+            player.moveLeft();
+        }
+        if (rightPressed) {
+            player.moveRight();
+        }
+        player.applyGravity();
+        checkPlatformCollision();
+        player.limitInScreen(screenWidth);
+    }  
+    // Check va chạm với platform
+    private void checkPlatformCollision() {
+        int rightSide = player.getX() + player.getWidth();
+        int leftSide = player.getX();
+        int topSide = player.getY();
+        int bottomSide = player.getY() +player.getHeight();
+
+        for (Platform platform : platforms) {
+            // Collision chiều nagng
+            boolean horizontalOverlap = rightSide > platform.getX() 
+                                    && leftSide < platform.getX() + platform.getWidth();
+            // COLLISON chiều dọc            
+            boolean verticalOverlap = bottomSide > platform.getY()
+                                    && topSide < platform.getY() + platform.getHeight();
+            // Nếu không đụng platform thì bỏ qua
+            if (!horizontalOverlap || !verticalOverlap) {
+                continue;
+            }
+            // Collision từ trên xuống
+            boolean collisionTop =
+                    bottomSide >= platform.getY()
+                            && bottomSide <= platform.getY() + 20;
+            // Nếu player đụng platform thì set player đứng trên platfomr
+            if (collisionTop) {
+                player.landOnGround(platform.getY());
+                continue;
+            }
+            // Collision từ dưới lên
+            boolean collisionBottom =
+                    topSide <= platform.getY() + platform.getHeight()
+                            && topSide >= platform.getY() + platform.getHeight() - 20;
+            // nếu player rơi trúng platform thì set player đứng trên platform
+            if (collisionBottom) {
+                player.setY(platform.getY() + platform.getHeight());
+                player.setVelocityY(0);
+                continue;
+            }
+            // Collision 2 bên
+            boolean collisionLeft =
+                    rightSide >= platform.getX()
+                            && leftSide <= platform.getX() + 20;
+            //
+            if (collisionLeft) {
+                player.setX(platform.getX() - player.getWidth());
+            }
+            boolean collisionRight =
+                leftSide <= platform.getX() + platform.getWidth()
+                        && leftSide >= platform.getX() + platform.getWidth() - 20;
+            if (collisionRight) {
+                player.setX(platform.getX() + platform.getWidth());
+            }
+        }
+    }
+    public void setLeftPressed(boolean leftPressed) {
+        this.leftPressed = leftPressed;
+    }
+
+    public void setRightPressed(boolean rightPressed) {
+        this.rightPressed = rightPressed;
+    }
+    // Hảm nhảy
+        public void jumpPlayer() {
+        player.jump();
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public ArrayList<Platform> getPlatforms() {
+        return platforms;
+    }
+}
