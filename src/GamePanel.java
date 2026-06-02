@@ -3,6 +3,7 @@ import javax.swing.Timer;
 
 import model.Player;
 import model.Coin;
+import model.Enemy;
 import model.Platform;
 
 import java.awt.Color;
@@ -27,6 +28,7 @@ public class GamePanel extends JPanel{
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         drawPlayer(g);
+        drawEnemy(g);
         drawPlatforms(g);
         drawCoins(g);
         drawScore(g);
@@ -42,6 +44,17 @@ public class GamePanel extends JPanel{
                 player.getWidth(),
                 player.getHeight()
         );
+    }
+    private void drawEnemy(Graphics g) {
+        for (Enemy enemy : model.getEnemies()) {
+            g.setColor(Color.LIGHT_GRAY);
+            g.fillRect(
+                    enemy.getX(),
+                    enemy.getY(),
+                    enemy.getWidth(),
+                    enemy.getHeight()
+            );
+        }
     }
     //Vẽ platform
     private void drawPlatforms(Graphics g) {

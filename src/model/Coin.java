@@ -27,5 +27,8 @@ public class Coin {
     public void collect() {
         collected = true;
     }
-    
+    // Reser lại xu khi thua game
+    public void reset(){
+        collected = false;
+    }
 }
