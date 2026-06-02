@@ -10,6 +10,7 @@ public class GameModel {
     private ArrayList<Platform> platforms;
     private ArrayList<Coin> coins;
     private int score = 0;
+    private int lives = 3;
     private ArrayList<Enemy> enemies;
 
     private boolean leftPressed = false;
@@ -32,8 +33,9 @@ public class GameModel {
         coins.add(new Coin(480, 280, 25));
         coins.add(new Coin(660, 200, 25));
         // enemy
-        enemies.add(new Enemy(300, 470, 40, 30, 200, 500));
-        enemies.add(new Enemy(500, 290, 40, 30, 430, 580));
+        enemies.add(new Enemy(300, 570, 40, 30, 200, 500));
+        enemies.add(new Enemy(650, 370, 40, 30, 600, 900));
+        // enemies.add(new Enemy(420, 370, 40, 30, 420, 520));
     }
     // Hàm cập nhật 
     public void update(int screenWidth) {
@@ -76,7 +78,13 @@ public class GameModel {
                             && topSide < enemy.getBottom();
             // Đụng enemy thì reset game
             if (touchingEnemy) {
-                resetGame();
+                 lives--;
+                if (lives <= 0) {
+                    resetGame();
+                    lives = 3;
+                } else {
+                    player = new Player(100, 100, 50, 50);
+                }
             }
         }
     }
@@ -181,5 +189,9 @@ public class GameModel {
     }
     public int getScore() {
         return score;
+    }
+    // Hàm mạng
+    public int getLives() {
+        return lives;
     }
 }

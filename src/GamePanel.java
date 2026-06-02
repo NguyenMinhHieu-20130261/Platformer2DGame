@@ -32,6 +32,7 @@ public class GamePanel extends JPanel{
         drawPlatforms(g);
         drawCoins(g);
         drawScore(g);
+        drawLives(g);
     }
     // Vẽ nhân vật
     private void drawPlayer(Graphics g) {
@@ -88,5 +89,19 @@ public class GamePanel extends JPanel{
     private void drawScore(Graphics g) {
         g.setColor(Color.WHITE);
         g.drawString("Score: " + model.getScore(), 20, 20);
+    }
+    private void drawLives(Graphics g) {
+        g.setColor(Color.WHITE);
+        g.drawString("Lives: " + model.getLives(), 20, 40);
+        g.setColor(Color.RED);
+        for (int i = 0; i < model.getLives(); i++) {
+            g.fillOval(80 + i * 25, 28, 12, 12);
+            g.fillOval(88 + i * 25, 28, 12, 12);
+            g.fillPolygon(
+                    new int[]{80 + i * 25, 100 + i * 25, 90 + i * 25},
+                    new int[]{36, 36, 50},
+                    3
+            );
+        }
     }
 }
