@@ -24,7 +24,6 @@ public class GameController implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
-
         if (key == KeyEvent.VK_A || key == KeyEvent.VK_LEFT) {
             model.setLeftPressed(false);
         }

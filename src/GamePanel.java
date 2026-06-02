@@ -2,14 +2,11 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import model.Player;
+import model.Coin;
 import model.Platform;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
-import java.util.ArrayList;
 
 public class GamePanel extends JPanel{
     private GameModel model;
@@ -25,13 +22,16 @@ public class GamePanel extends JPanel{
         });
         timer.start();
     }
-    // Vẽ nhân vật
+    // Vẽ components
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         drawPlayer(g);
         drawPlatforms(g);
+        drawCoins(g);
+        drawScore(g);
     }
+    // Vẽ nhân vật
     private void drawPlayer(Graphics g) {
         Player player = model.getPlayer();
 
@@ -55,5 +55,25 @@ public class GamePanel extends JPanel{
                     platform.getHeight()
             );
         }
+    }
+    // vẽ xu
+    private void drawCoins(Graphics g) {
+        g.setColor(Color.YELLOW);
+
+        for (Coin coin : model.getCoins()) {
+            if (!coin.isCollected()) {
+                g.fillOval(
+                        coin.getX(),
+                        coin.getY(),
+                        coin.getSize(),
+                        coin.getSize()
+                );
+            }
+        }
+    }
+    // vẽ điểm số
+    private void drawScore(Graphics g) {
+        g.setColor(Color.WHITE);
+        g.drawString("Score: " + model.getScore(), 20, 20);
     }
 }

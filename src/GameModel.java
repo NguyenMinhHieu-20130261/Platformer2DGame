@@ -1,19 +1,22 @@
 import java.util.ArrayList;
 
+import model.Coin;
 import model.Platform;
 import model.Player;
 
 public class GameModel {
     private Player player;
     private ArrayList<Platform> platforms;
+    private ArrayList<Coin> coins;
+    private int score = 0;
 
     private boolean leftPressed = false;
     private boolean rightPressed = false;
 
     public GameModel() {
         player = new Player(100, 100, 50, 50);
-
         platforms = new ArrayList<>();
+        coins = new ArrayList<>();
         //măt đất
         platforms.add(new Platform(0, 600, 1000, 100));
         // các bục nhỏ
@@ -21,6 +24,10 @@ public class GameModel {
         platforms.add(new Platform(420, 400, 100, 25));
         platforms.add(new Platform(620, 240, 120, 25));        
         platforms.add(new Platform(600, 400, 300, 200));
+        // xu
+        coins.add(new Coin(250, 360, 25));
+        coins.add(new Coin(480, 280, 25));
+        coins.add(new Coin(660, 200, 25));
     }
     // Hàm cập nhật 
     public void update(int screenWidth) {
@@ -32,6 +39,7 @@ public class GameModel {
         }
         player.applyGravity();
         checkPlatformCollision();
+        checkCoinCollision();
         player.limitInScreen(screenWidth);
     }  
     // Check va chạm với platform
@@ -87,10 +95,31 @@ public class GameModel {
             }
         }
     }
+    // Check collision xu
+    private void checkCoinCollision() {
+        int rightSide = player.getX() + player.getWidth();
+        int leftSide = player.getX();
+        int topSide = player.getY();
+        int bottomSide = player.getY() +player.getHeight();
+        for (Coin coin : coins) {
+            // Xu đã thu thập thì skip
+            if (coin.isCollected()) {
+                continue;
+            }
+            boolean touchingCoin = rightSide > coin.getX()
+                            && leftSide < coin.getX() + coin.getSize()
+                            && bottomSide > coin.getY()
+                            && topSide < coin.getY() + coin.getSize();
+            // Nếu chạm xu thì + 1 điểm 
+            if (touchingCoin) {
+                coin.collect();
+                score += 1;
+            }
+        }
+    }
     public void setLeftPressed(boolean leftPressed) {
         this.leftPressed = leftPressed;
     }
-
     public void setRightPressed(boolean rightPressed) {
         this.rightPressed = rightPressed;
     }
@@ -98,12 +127,18 @@ public class GameModel {
         public void jumpPlayer() {
         player.jump();
     }
-
+    // Hàm tạo char + platform
     public Player getPlayer() {
         return player;
     }
-
     public ArrayList<Platform> getPlatforms() {
         return platforms;
+    }
+    // Hàm collect coin
+    public ArrayList<Coin> getCoins() {
+        return coins;
+    }
+    public int getScore() {
+        return score;
     }
 }
