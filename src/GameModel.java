@@ -4,6 +4,7 @@ import model.Coin;
 import model.Platform;
 import model.Player;
 import model.Enemy;
+import model.GameState;
 
 public class GameModel {
     private Player player;
@@ -13,8 +14,7 @@ public class GameModel {
 
     private int score = 0;
     private int lives = 3;
-    private boolean gameOver = false;
-    private boolean gameWin = false;
+    private GameState gameState = GameState.START;
 
     private boolean leftPressed = false;
     private boolean rightPressed = false;
@@ -42,7 +42,7 @@ public class GameModel {
     }
     // Hàm cập nhật 
     public void update(int screenWidth) {
-        if (gameOver || gameWin) {
+        if (gameState != GameState.PLAYING) {
             return;
         }
         if (leftPressed) {
@@ -68,8 +68,7 @@ public class GameModel {
         player = new Player(100, 100, 50, 50);
         score = 0;
         lives = 3;
-        gameOver = false;
-        gameWin = false;
+        gameState = GameState.PLAYING;
 
         leftPressed = false;
         rightPressed = false;
@@ -92,7 +91,9 @@ public class GameModel {
             if (touchingEnemy) {
                  lives--;
                 if (lives <= 0) {
-                    gameOver = true;
+                    gameState = GameState.GAME_OVER;
+                    leftPressed = false;
+                    rightPressed = false;
                 } else {
                     player = new Player(100, 100, 50, 50);
                     leftPressed = false;
@@ -183,7 +184,7 @@ public class GameModel {
                 return;
             }
         }
-        gameWin = true;
+        gameState = GameState.GAME_WIN;
         leftPressed = false;
         rightPressed = false;
     }
@@ -219,9 +220,15 @@ public class GameModel {
         return lives;
     }
     public boolean isGameOver() {
-        return gameOver;
+        return gameState == GameState.GAME_OVER;
     }
     public boolean isGameWin() {
-        return gameWin;
+        return gameState == GameState.GAME_WIN;
+    }
+    public void startGame() {
+        gameState = GameState.PLAYING;
+    }
+    public GameState getGameState() {
+        return gameState;
     }
 }

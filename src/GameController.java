@@ -23,6 +23,9 @@ public class GameController implements KeyListener {
         if (key == KeyEvent.VK_R) {
             model.resetGame();
         }
+        if (key == KeyEvent.VK_ENTER) {
+            model.startGame();
+        }
     }
     @Override
     public void keyReleased(KeyEvent e) {

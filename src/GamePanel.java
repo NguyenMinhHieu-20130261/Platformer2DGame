@@ -4,6 +4,7 @@ import javax.swing.Timer;
 import model.Player;
 import model.Coin;
 import model.Enemy;
+import model.GameState;
 import model.Platform;
 
 import java.awt.Color;
@@ -11,6 +12,7 @@ import java.awt.Graphics;
 
 public class GamePanel extends JPanel{
     private GameModel model;
+    private GameState state;
 
     public GamePanel(GameModel model) {
         this.model = model;
@@ -38,6 +40,9 @@ public class GamePanel extends JPanel{
         }
         if (model.isGameWin()) {
             drawGameWin(g);
+        }
+        if (model.getGameState() == GameState.START) {
+            drawStartScreen(g);
         }
     }
     // Vẽ nhân vật
@@ -108,5 +113,16 @@ public class GamePanel extends JPanel{
         g.setColor(Color.WHITE);
         g.setFont(g.getFont().deriveFont(20f));
         g.drawString("Bấm nút R để chơi lại", getWidth() / 2 - 100, getHeight() / 2 + 25);
+    }
+    private void drawStartScreen(Graphics g) {
+        g.setColor(new Color(0, 0, 0, 180));
+        g.fillRect(0, 0, getWidth(), getHeight());
+        g.setColor(Color.WHITE);
+        g.setFont(g.getFont().deriveFont(40f));
+        g.drawString("2D PLATFORMER", getWidth() / 2 - 150, getHeight() / 2 - 40);
+        g.setFont(g.getFont().deriveFont(18f));
+        g.drawString("Bấm ENTER để chơi", getWidth() / 2 - 90, getHeight() / 2 + 10);
+        g.setFont(g.getFont().deriveFont(14f));
+        g.drawString("A / D để di chuyển, SPACE để nhảy", getWidth() / 2 - 105, getHeight() / 2 + 40);
     }
 }
