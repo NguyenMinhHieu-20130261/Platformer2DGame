@@ -76,6 +76,16 @@ public class GameModel {
             coin.reset();
         }
     }
+    // Hàm pause game
+    public void togglePause() {
+        if (gameState == GameState.PLAYING) {
+            gameState = GameState.PAUSE;
+            leftPressed = false;
+            rightPressed = false;
+        } else if (gameState == GameState.PAUSE) {
+            gameState = GameState.PLAYING;
+        }
+    }
     // Collision enemy
     private void checkEnemyCollision() {
         int rightSide = player.getX() + player.getWidth();
@@ -219,16 +229,18 @@ public class GameModel {
     public int getLives() {
         return lives;
     }
-    public boolean isGameOver() {
-        return gameState == GameState.GAME_OVER;
-    }
-    public boolean isGameWin() {
-        return gameState == GameState.GAME_WIN;
-    }
+    // Hàm lấy STATE Game
     public void startGame() {
         gameState = GameState.PLAYING;
+    }
+    public void pauseGame() {
+        gameState = GameState.PAUSE;
     }
     public GameState getGameState() {
         return gameState;
     }
+    public boolean isPlaying() {
+        return gameState == GameState.PLAYING;
+    }
+    
 }

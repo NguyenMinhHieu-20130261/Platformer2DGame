@@ -35,14 +35,17 @@ public class GamePanel extends JPanel{
         drawCoins(g);
         drawScore(g);
         drawLives(g);
-        if (model.isGameOver()) {
+        if (model.getGameState() == GameState.GAME_OVER) {
             drawGameOver(g);
         }
-        if (model.isGameWin()) {
+        if (model.getGameState() == GameState.GAME_WIN) {
             drawGameWin(g);
         }
         if (model.getGameState() == GameState.START) {
             drawStartScreen(g);
+        }
+        if (model.getGameState() == GameState.PAUSE) {
+            drawGamePause(g);
         }
     }
     // Vẽ nhân vật
@@ -124,5 +127,16 @@ public class GamePanel extends JPanel{
         g.drawString("Bấm ENTER để chơi", getWidth() / 2 - 90, getHeight() / 2 + 10);
         g.setFont(g.getFont().deriveFont(14f));
         g.drawString("A / D để di chuyển, SPACE để nhảy", getWidth() / 2 - 105, getHeight() / 2 + 40);
+    }
+    private void drawGamePause(Graphics g) {
+        g.setColor(new Color(0, 0, 0, 160));
+        g.fillRect(0, 0, getWidth(), getHeight());
+
+        g.setColor(Color.WHITE);
+        g.setFont(g.getFont().deriveFont(40f));
+        g.drawString("PAUSED", getWidth() / 2 - 80, getHeight() / 2 - 20);
+
+        g.setFont(g.getFont().deriveFont(18f));
+        g.drawString("Bấm P để tiếp tục", getWidth() / 2 - 80, getHeight() / 2 + 25);
     }
 }
