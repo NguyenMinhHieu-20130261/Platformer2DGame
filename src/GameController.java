@@ -20,6 +20,9 @@ public class GameController implements KeyListener {
         if (key == KeyEvent.VK_SPACE || key == KeyEvent.VK_UP) {
             model.jumpPlayer();
         }
+        if (key == KeyEvent.VK_R) {
+            model.resetGame();
+        }
     }
     @Override
     public void keyReleased(KeyEvent e) {

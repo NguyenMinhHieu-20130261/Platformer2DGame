@@ -33,55 +33,38 @@ public class GamePanel extends JPanel{
         drawCoins(g);
         drawScore(g);
         drawLives(g);
+        if (model.isGameOver()) {
+            drawGameOver(g);
+        }
+        if (model.isGameWin()) {
+            drawGameWin(g);
+        }
     }
     // Vẽ nhân vật
     private void drawPlayer(Graphics g) {
         Player player = model.getPlayer();
-
         g.setColor(Color.RED);
-        g.fillRect(
-                player.getX(),
-                player.getY(),
-                player.getWidth(),
-                player.getHeight()
-        );
+        g.fillRect(player.getX(),player.getY(),player.getWidth(),player.getHeight());
     }
     private void drawEnemy(Graphics g) {
         for (Enemy enemy : model.getEnemies()) {
             g.setColor(Color.LIGHT_GRAY);
-            g.fillRect(
-                    enemy.getX(),
-                    enemy.getY(),
-                    enemy.getWidth(),
-                    enemy.getHeight()
-            );
+            g.fillRect(enemy.getX(),enemy.getY(),enemy.getWidth(),enemy.getHeight());
         }
     }
     //Vẽ platform
     private void drawPlatforms(Graphics g) {
         g.setColor(Color.GREEN);
-
         for (Platform platform : model.getPlatforms()) {
-            g.fillRect(
-                    platform.getX(),
-                    platform.getY(),
-                    platform.getWidth(),
-                    platform.getHeight()
-            );
+            g.fillRect(platform.getX(),platform.getY(),platform.getWidth(),platform.getHeight());
         }
     }
     // vẽ xu
     private void drawCoins(Graphics g) {
         g.setColor(Color.YELLOW);
-
         for (Coin coin : model.getCoins()) {
             if (!coin.isCollected()) {
-                g.fillOval(
-                        coin.getX(),
-                        coin.getY(),
-                        coin.getSize(),
-                        coin.getSize()
-                );
+                g.fillOval( coin.getX(),coin.getY(),coin.getSize(),coin.getSize());
             }
         }
     }
@@ -97,11 +80,33 @@ public class GamePanel extends JPanel{
         for (int i = 0; i < model.getLives(); i++) {
             g.fillOval(80 + i * 25, 28, 12, 12);
             g.fillOval(88 + i * 25, 28, 12, 12);
-            g.fillPolygon(
-                    new int[]{80 + i * 25, 100 + i * 25, 90 + i * 25},
-                    new int[]{36, 36, 50},
-                    3
-            );
+            g.fillPolygon(new int[]{80 + i * 25, 100 + i * 25, 90 + i * 25},
+                        new int[]{36, 36, 50}, 3);
         }
+    }
+    // Màn hình kết thúc game
+    private void drawGameOver(Graphics g) {
+        g.setColor(new Color(0, 0, 0, 180));
+        g.fillRect(0, 0, getWidth(), getHeight());
+
+        g.setColor(Color.WHITE);
+        g.setFont(g.getFont().deriveFont(40f));
+        g.drawString("GAME OVER!", getWidth() / 2 - 120, getHeight() / 2 - 20);
+
+        g.setFont(g.getFont().deriveFont(20f));
+        g.drawString("Bấm nút R để reset Game", getWidth() / 2 - 115, getHeight() / 2 + 25);
+    }
+    // Madn hình win game
+    private void drawGameWin(Graphics g) {
+        g.setColor(new Color(0, 0, 0, 180));
+        g.fillRect(0, 0, getWidth(), getHeight());
+
+        g.setColor(Color.YELLOW);
+        g.setFont(g.getFont().deriveFont(40f));
+        g.drawString("GAME WIN!", getWidth() / 2 - 100, getHeight() / 2 - 20);
+
+        g.setColor(Color.WHITE);
+        g.setFont(g.getFont().deriveFont(20f));
+        g.drawString("Bấm nút R để chơi lại", getWidth() / 2 - 100, getHeight() / 2 + 25);
     }
 }

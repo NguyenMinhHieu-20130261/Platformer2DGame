@@ -7,11 +7,14 @@ import model.Enemy;
 
 public class GameModel {
     private Player player;
+    private ArrayList<Enemy> enemies;
     private ArrayList<Platform> platforms;
     private ArrayList<Coin> coins;
+
     private int score = 0;
     private int lives = 3;
-    private ArrayList<Enemy> enemies;
+    private boolean gameOver = false;
+    private boolean gameWin = false;
 
     private boolean leftPressed = false;
     private boolean rightPressed = false;
@@ -39,6 +42,9 @@ public class GameModel {
     }
     // Hàm cập nhật 
     public void update(int screenWidth) {
+        if (gameOver || gameWin) {
+            return;
+        }
         if (leftPressed) {
             player.moveLeft();
         }
@@ -58,9 +64,15 @@ public class GameModel {
         }
     }
     // Hàm reset game
-    private void resetGame() {
+    public void resetGame() {
         player = new Player(100, 100, 50, 50);
         score = 0;
+        lives = 3;
+        gameOver = false;
+        gameWin = false;
+
+        leftPressed = false;
+        rightPressed = false;
         for (Coin coin : coins) {
             coin.reset();
         }
@@ -80,10 +92,11 @@ public class GameModel {
             if (touchingEnemy) {
                  lives--;
                 if (lives <= 0) {
-                    resetGame();
-                    lives = 3;
+                    gameOver = true;
                 } else {
                     player = new Player(100, 100, 50, 50);
+                    leftPressed = false;
+                    rightPressed = false;
                 }
             }
         }
@@ -160,8 +173,19 @@ public class GameModel {
             if (touchingCoin) {
                 coin.collect();
                 score += 1;
+                checkWinCondition();
             }
         }
+    }
+    private void checkWinCondition() {
+        for (Coin coin : coins) {
+            if (!coin.isCollected()) {
+                return;
+            }
+        }
+        gameWin = true;
+        leftPressed = false;
+        rightPressed = false;
     }
     public void setLeftPressed(boolean leftPressed) {
         this.leftPressed = leftPressed;
@@ -193,5 +217,11 @@ public class GameModel {
     // Hàm mạng
     public int getLives() {
         return lives;
+    }
+    public boolean isGameOver() {
+        return gameOver;
+    }
+    public boolean isGameWin() {
+        return gameWin;
     }
 }
