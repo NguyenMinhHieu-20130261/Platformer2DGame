@@ -15,6 +15,7 @@ public class GameModel {
     private int score = 0;
     private int lives = 3;
     private int currentLevel = 1;
+    private final int MAX_LEVEL = 3;
     private GameState gameState = GameState.START;
 
     private boolean leftPressed = false;
@@ -107,8 +108,8 @@ public class GameModel {
                 return;
             }
         }
-        if (currentLevel == 1) {
-            currentLevel = 2;
+        if (currentLevel < MAX_LEVEL) {
+            currentLevel++;
             loadCurrentLevel();
             resetPlayerPos();
         } else {

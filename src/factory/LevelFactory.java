@@ -27,6 +27,8 @@ public class LevelFactory {
             createLevel1();
         } else if (level == 2) {
             createLevel2();
+        } else if (level == 3) {
+            createLevel3();
         }
     }
     private void createLevel1() {
@@ -43,17 +45,33 @@ public class LevelFactory {
         enemies.add(new Enemy(650, 370, 40, 30, 600, 900));
     }
     private void createLevel2() {
-        platforms.add(new Platform(150, 500, 120, 25));
-        platforms.add(new Platform(350, 420, 120, 25));
-        platforms.add(new Platform(550, 340, 120, 25));
-        platforms.add(new Platform(750, 260, 120, 25));
+        platforms.add(new Platform(120, 520, 170, 25));
+        platforms.add(new Platform(350, 440, 170, 25));
+        platforms.add(new Platform(580, 360, 170, 25));
+        platforms.add(new Platform(780, 280, 150, 25));
 
-        coins.add(new Coin(180, 460, 25));
-        coins.add(new Coin(380, 380, 25));
-        coins.add(new Coin(580, 300, 25));
-        coins.add(new Coin(780, 220, 25));
+        coins.add(new Coin(190, 480, 25));
+        coins.add(new Coin(420, 400, 25));
+        coins.add(new Coin(650, 320, 25));
+        coins.add(new Coin(830, 240, 25));
 
-        enemies.add(new Enemy(300, 570, 40, 30, 150, 450));
-        // enemies.add(new Enemy(570, 310, 40, 30, 550, 670));
+        enemies.add(new Enemy(300, 570, 40, 30, 200, 500));
+        enemies.add(new Enemy(600, 330, 40, 30, 580, 750));
+    }
+    private void createLevel3() {
+        platforms.add(new Platform(80, 520, 150, 25));
+        platforms.add(new Platform(280, 460, 150, 25));
+        platforms.add(new Platform(480, 400, 150, 25));
+        platforms.add(new Platform(680, 340, 150, 25));
+        platforms.add(new Platform(420, 250, 220, 25));
+
+        coins.add(new Coin(140, 480, 25));
+        coins.add(new Coin(340, 420, 25));
+        coins.add(new Coin(540, 360, 25));
+        coins.add(new Coin(740, 300, 25));
+        coins.add(new Coin(510, 210, 25));
+
+        enemies.add(new Enemy(250, 570, 40, 30, 180, 450));
+        enemies.add(new Enemy(470, 220, 40, 30, 420, 640));
     }
 }
