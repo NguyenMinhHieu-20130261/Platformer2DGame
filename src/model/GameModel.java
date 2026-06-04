@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import factory.LevelFactory;
+import collision.CollisionManager;
 
 public class GameModel {
     private Player player;
@@ -9,6 +10,7 @@ public class GameModel {
     private ArrayList<Platform> platforms;
     private ArrayList<Coin> coins;
     private LevelFactory levelFactory;
+    private CollisionManager collisionManager;
 
     private int score = 0;
     private int lives = 3;
@@ -24,7 +26,9 @@ public class GameModel {
         coins = new ArrayList<>();
         enemies = new ArrayList<>();
         levelFactory = new LevelFactory(platforms, coins, enemies);
+        collisionManager = new CollisionManager();
         loadCurrentLevel();
+        
     }
     private void loadCurrentLevel() {
         levelFactory.createLevel(currentLevel);
@@ -41,10 +45,19 @@ public class GameModel {
             player.moveRight();
         }
         player.applyGravity();
-        checkPlatformCollision();
-        checkCoinCollision();
+        collisionManager.checkPlatformCollision(player, platforms);
+        boolean collectedCoin = collisionManager.checkCoinCollision(player, coins);
+        if (collectedCoin) {
+            score++;
+            checkWinCondition();
+        }
         updateEnemies();
-        checkEnemyCollision();
+        boolean touchingEnemy = collisionManager.checkEnemyCollision(player, enemies);
+
+        if (touchingEnemy) {
+            loseLife();
+        }
+
         player.limitInScreen(screenWidth);
     }
     private void updateEnemies() {
@@ -86,103 +99,6 @@ public class GameModel {
             rightPressed = false;
         } else if (gameState == GameState.PAUSE) {
             gameState = GameState.PLAYING;
-        }
-    }
-    // Collision enemy
-    private void checkEnemyCollision() {
-        int rightSide = player.getX() + player.getWidth();
-        int leftSide = player.getX();
-        int topSide = player.getY();
-        int bottomSide = player.getY() +player.getHeight();
-        for (Enemy enemy : enemies) {
-            boolean touchingEnemy = rightSide > enemy.getLeft()
-                            && leftSide < enemy.getRight()
-                            && bottomSide > enemy.getTop()
-                            && topSide < enemy.getBottom();
-            // Đụng enemy thì reset game
-            if (touchingEnemy) {
-                loseLife();
-                return;
-            }
-        }
-    }
-    // Check va chạm với platform
-    private void checkPlatformCollision() {
-        int rightSide = player.getX() + player.getWidth();
-        int leftSide = player.getX();
-        int topSide = player.getY();
-        int bottomSide = player.getY() +player.getHeight();
-
-        for (Platform platform : platforms) {
-            // Collision chiều nagng
-            boolean horizontalOverlap = rightSide > platform.getX() 
-                                    && leftSide < platform.getX() + platform.getWidth();
-            // COLLISON chiều dọc            
-            boolean verticalOverlap = bottomSide > platform.getY()
-                                    && topSide < platform.getY() + platform.getHeight();
-            // Nếu không đụng platform thì bỏ qua
-            if (!horizontalOverlap || !verticalOverlap) {
-                continue;
-            }
-            // Collision từ trên xuống
-            boolean collisionTop =
-                    bottomSide >= platform.getY()
-                            && bottomSide <= platform.getY() + 20;
-            // Nếu player đụng platform thì set player đứng trên platfomr
-            if (collisionTop) {
-                player.landOnGround(platform.getY());
-                continue;
-            }
-            // Collision từ dưới lên
-            boolean collisionBottom =
-                    topSide <= platform.getY() + platform.getHeight()
-                            && topSide >= platform.getY() + platform.getHeight() - 20;
-            // nếu player rơi trúng platform thì set player đứng trên platform
-            if (collisionBottom) {
-                player.setY(platform.getY() + platform.getHeight());
-                player.setVelocityY(0);
-                continue;
-            }
-            // Collision 2 bên
-            boolean collisionLeft =
-                    rightSide >= platform.getX()
-                            && rightSide <= platform.getX() + 20;
-            //
-            if (collisionLeft) {
-                player.setX(platform.getX() - player.getWidth());
-                continue;
-            }
-            boolean collisionRight =
-                leftSide <= platform.getX() + platform.getWidth()
-                        && leftSide >= platform.getX() + platform.getWidth() - 20;
-            if (collisionRight) {
-                player.setX(platform.getX() + platform.getWidth());
-            }
-        }
-    }
-    // Check collision xu
-    private void checkCoinCollision() {
-        int rightSide = player.getX() + player.getWidth();
-        int leftSide = player.getX();
-        int topSide = player.getY();
-        int bottomSide = player.getY() + player.getHeight();
-        boolean collectedCoinThisFrame = false;
-        for (Coin coin : coins) {
-            if (coin.isCollected()) {
-                continue;
-            }
-            boolean touchingCoin = rightSide > coin.getX()
-                            && leftSide < coin.getX() + coin.getSize()
-                            && bottomSide > coin.getY()
-                            && topSide < coin.getY() + coin.getSize();
-            if (touchingCoin) {
-                coin.collect();
-                score += 1;
-                collectedCoinThisFrame = true;
-            }
-        }
-        if (collectedCoinThisFrame) {
-            checkWinCondition();
         }
     }
     private void checkWinCondition() {
