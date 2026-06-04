@@ -2,6 +2,10 @@
 
 import javax.swing.JFrame;
 
+import controller.GameController;
+import model.GameModel;
+import view.GamePanel;
+
 public class Main {
     public static void main(String[] args) {
         JFrame window = new JFrame();
@@ -16,9 +20,9 @@ public class Main {
         GamePanel gamePanel = new GamePanel(model);
         GameController controller = new GameController(model);
         // Thêm panel, controller vào window
+        gamePanel.addKeyListener(controller);
         window.add(gamePanel);
         window.setVisible(true);
-        gamePanel.addKeyListener(controller);
         gamePanel.requestFocusInWindow();
     }
 }

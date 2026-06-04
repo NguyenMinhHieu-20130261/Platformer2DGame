@@ -1,19 +1,18 @@
-import java.util.ArrayList;
+package model;
 
-import model.Coin;
-import model.Platform;
-import model.Player;
-import model.Enemy;
-import model.GameState;
+import java.util.ArrayList;
+import factory.LevelFactory;
 
 public class GameModel {
     private Player player;
     private ArrayList<Enemy> enemies;
     private ArrayList<Platform> platforms;
     private ArrayList<Coin> coins;
+    private LevelFactory levelFactory;
 
     private int score = 0;
     private int lives = 3;
+    private int currentLevel = 1;
     private GameState gameState = GameState.START;
 
     private boolean leftPressed = false;
@@ -24,21 +23,11 @@ public class GameModel {
         platforms = new ArrayList<>();
         coins = new ArrayList<>();
         enemies = new ArrayList<>();
-        //măt đất
-        platforms.add(new Platform(0, 600, 1000, 100));
-        // các bục nhỏ
-        platforms.add(new Platform(200, 450, 150, 25));
-        platforms.add(new Platform(420, 400, 100, 25));
-        platforms.add(new Platform(620, 240, 120, 25));        
-        platforms.add(new Platform(600, 400, 300, 200));
-        // xu
-        coins.add(new Coin(250, 360, 25));
-        coins.add(new Coin(480, 280, 25));
-        coins.add(new Coin(660, 200, 25));
-        // enemy
-        enemies.add(new Enemy(300, 570, 40, 30, 200, 500));
-        enemies.add(new Enemy(650, 370, 40, 30, 600, 900));
-        // enemies.add(new Enemy(420, 370, 40, 30, 420, 520));
+        levelFactory = new LevelFactory(platforms, coins, enemies);
+        loadCurrentLevel();
+    }
+    private void loadCurrentLevel() {
+        levelFactory.createLevel(currentLevel);
     }
     // Hàm cập nhật 
     public void update(int screenWidth) {
@@ -65,15 +54,28 @@ public class GameModel {
     }
     // Hàm reset game
     public void resetGame() {
-        player = new Player(100, 100, 50, 50);
+        currentLevel = 1;
         score = 0;
         lives = 3;
+        player = new Player(100, 100, 50, 50);
         gameState = GameState.PLAYING;
-
         leftPressed = false;
         rightPressed = false;
-        for (Coin coin : coins) {
-            coin.reset();
+        loadCurrentLevel();
+    }
+    public void resetPlayerPos(){
+        player = new Player(100, 100, 50, 50);
+        leftPressed = false;
+        rightPressed = false;   
+    }
+    private void loseLife() {
+        lives--;
+        if (lives <= 0) {
+            gameState = GameState.GAME_OVER;
+            leftPressed = false;
+            rightPressed = false;
+        } else {
+            resetPlayerPos();
         }
     }
     // Hàm pause game
@@ -99,16 +101,8 @@ public class GameModel {
                             && topSide < enemy.getBottom();
             // Đụng enemy thì reset game
             if (touchingEnemy) {
-                 lives--;
-                if (lives <= 0) {
-                    gameState = GameState.GAME_OVER;
-                    leftPressed = false;
-                    rightPressed = false;
-                } else {
-                    player = new Player(100, 100, 50, 50);
-                    leftPressed = false;
-                    rightPressed = false;
-                }
+                loseLife();
+                return;
             }
         }
     }
@@ -152,10 +146,11 @@ public class GameModel {
             // Collision 2 bên
             boolean collisionLeft =
                     rightSide >= platform.getX()
-                            && leftSide <= platform.getX() + 20;
+                            && rightSide <= platform.getX() + 20;
             //
             if (collisionLeft) {
                 player.setX(platform.getX() - player.getWidth());
+                continue;
             }
             boolean collisionRight =
                 leftSide <= platform.getX() + platform.getWidth()
@@ -170,9 +165,9 @@ public class GameModel {
         int rightSide = player.getX() + player.getWidth();
         int leftSide = player.getX();
         int topSide = player.getY();
-        int bottomSide = player.getY() +player.getHeight();
+        int bottomSide = player.getY() + player.getHeight();
+        boolean collectedCoinThisFrame = false;
         for (Coin coin : coins) {
-            // Xu đã thu thập thì skip
             if (coin.isCollected()) {
                 continue;
             }
@@ -180,12 +175,14 @@ public class GameModel {
                             && leftSide < coin.getX() + coin.getSize()
                             && bottomSide > coin.getY()
                             && topSide < coin.getY() + coin.getSize();
-            // Nếu chạm xu thì + 1 điểm 
             if (touchingCoin) {
                 coin.collect();
                 score += 1;
-                checkWinCondition();
+                collectedCoinThisFrame = true;
             }
+        }
+        if (collectedCoinThisFrame) {
+            checkWinCondition();
         }
     }
     private void checkWinCondition() {
@@ -194,9 +191,15 @@ public class GameModel {
                 return;
             }
         }
-        gameState = GameState.GAME_WIN;
-        leftPressed = false;
-        rightPressed = false;
+        if (currentLevel == 1) {
+            currentLevel = 2;
+            loadCurrentLevel();
+            resetPlayerPos();
+        } else {
+            gameState = GameState.GAME_WIN;
+            leftPressed = false;
+            rightPressed = false;
+        }
     }
     public void setLeftPressed(boolean leftPressed) {
         this.leftPressed = leftPressed;
@@ -205,8 +208,10 @@ public class GameModel {
         this.rightPressed = rightPressed;
     }
     // Hảm nhảy
-        public void jumpPlayer() {
-        player.jump();
+    public void jumpPlayer() {
+        if (gameState == GameState.PLAYING) {
+            player.jump();
+        }
     }
     // Hàm tạo char + platform
     public Player getPlayer() {
@@ -231,16 +236,17 @@ public class GameModel {
     }
     // Hàm lấy STATE Game
     public void startGame() {
-        gameState = GameState.PLAYING;
-    }
-    public void pauseGame() {
-        gameState = GameState.PAUSE;
-    }
+        if (gameState == GameState.START) {
+            gameState = GameState.PLAYING;
+        }
+    }  
     public GameState getGameState() {
         return gameState;
     }
     public boolean isPlaying() {
         return gameState == GameState.PLAYING;
     }
-    
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
 }

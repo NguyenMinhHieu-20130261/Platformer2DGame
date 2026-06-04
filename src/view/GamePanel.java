@@ -1,9 +1,11 @@
+package view;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import model.Player;
 import model.Coin;
 import model.Enemy;
+import model.GameModel;
 import model.GameState;
 import model.Platform;
 
@@ -12,7 +14,6 @@ import java.awt.Graphics;
 
 public class GamePanel extends JPanel{
     private GameModel model;
-    private GameState state;
 
     public GamePanel(GameModel model) {
         this.model = model;
@@ -29,12 +30,13 @@ public class GamePanel extends JPanel{
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        drawPlayer(g);
-        drawEnemy(g);
         drawPlatforms(g);
         drawCoins(g);
+        drawEnemy(g);
+        drawPlayer(g);
         drawScore(g);
         drawLives(g);
+        drawLevel(g);
         if (model.getGameState() == GameState.GAME_OVER) {
             drawGameOver(g);
         }
@@ -138,5 +140,10 @@ public class GamePanel extends JPanel{
 
         g.setFont(g.getFont().deriveFont(18f));
         g.drawString("Bấm P để tiếp tục", getWidth() / 2 - 80, getHeight() / 2 + 25);
+    }
+    //
+    private void drawLevel(Graphics g) {
+        g.setColor(Color.WHITE);
+        g.drawString("Level: " + model.getCurrentLevel(), 20, 60);
     }
 }

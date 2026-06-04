@@ -1,5 +1,8 @@
+package controller;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+
+import model.GameModel;
 
 public class GameController implements KeyListener {
     private GameModel model;
@@ -20,7 +23,7 @@ public class GameController implements KeyListener {
         }
         if (key == KeyEvent.VK_P) {
             model.togglePause();
-            return;
+            return; 
         }
         if (!model.isPlaying()) {
             return;
@@ -50,7 +53,5 @@ public class GameController implements KeyListener {
     }
     @Override
     public void keyTyped(KeyEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'keyTyped'");
     }
 }
