@@ -17,7 +17,7 @@ public class GamePanel extends JPanel{
 
     public GamePanel(GameModel model) {
         this.model = model;
-        this.setBackground(Color.BLACK);
+        this.setBackground(new Color(135, 206, 235));
         this.setFocusable(true);
         
         Timer timer = new Timer(10, e -> {
@@ -53,20 +53,32 @@ public class GamePanel extends JPanel{
     // Vẽ nhân vật
     private void drawPlayer(Graphics g) {
         Player player = model.getPlayer();
-        g.setColor(Color.RED);
-        g.fillRect(player.getX(),player.getY(),player.getWidth(),player.getHeight());
+        int x = player.getX();
+        int y = player.getY();
+        int w = player.getWidth();
+        int h = player.getHeight();
+        // thân
+        g.setColor(new Color(220, 60, 60));
+        g.fillRoundRect(x, y, w, h, 12, 12);
     }
     private void drawEnemy(Graphics g) {
         for (Enemy enemy : model.getEnemies()) {
-            g.setColor(Color.LIGHT_GRAY);
-            g.fillRect(enemy.getX(),enemy.getY(),enemy.getWidth(),enemy.getHeight());
+            int x = enemy.getX();
+            int y = enemy.getY();
+            int w = enemy.getWidth();
+            int h = enemy.getHeight();
+            g.setColor(new Color(90, 90, 90));
+            g.fillRoundRect(x, y, w, h, 10, 10);
         }
     }
     //Vẽ platform
     private void drawPlatforms(Graphics g) {
         g.setColor(Color.GREEN);
         for (Platform platform : model.getPlatforms()) {
-            g.fillRect(platform.getX(),platform.getY(),platform.getWidth(),platform.getHeight());
+            g.setColor(new Color(90, 180, 80));
+            g.fillRect(platform.getX(), platform.getY(), platform.getWidth(), platform.getHeight());
+            g.setColor(new Color(70, 120, 50));
+            g.drawRect(platform.getX(), platform.getY(), platform.getWidth(), platform.getHeight());
         }
     }
     // vẽ xu
@@ -74,7 +86,11 @@ public class GamePanel extends JPanel{
         g.setColor(Color.YELLOW);
         for (Coin coin : model.getCoins()) {
             if (!coin.isCollected()) {
-                g.fillOval( coin.getX(),coin.getY(),coin.getSize(),coin.getSize());
+                g.setColor(Color.YELLOW);
+                g.fillOval(coin.getX(), coin.getY(), coin.getSize(), coin.getSize());
+                g.setColor(new Color(180, 130, 0));
+                g.drawOval(coin.getX(), coin.getY(), coin.getSize(), coin.getSize());
+                g.drawString("$", coin.getX() + 8, coin.getY() + 18);
             }
         }
     }

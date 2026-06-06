@@ -27,8 +27,8 @@ public class GameModel {
         coins = new ArrayList<>();
         enemies = new ArrayList<>();
         collisionManager = new CollisionManager();
-        loadCurrentLevel();
         levelFactory = new LevelFactory(platforms, coins, enemies);
+        loadCurrentLevel();
     }
     private void loadCurrentLevel() {
         levelFactory.createLevel(currentLevel);
