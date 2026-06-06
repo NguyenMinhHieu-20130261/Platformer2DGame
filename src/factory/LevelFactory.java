@@ -32,15 +32,16 @@ public class LevelFactory {
         }
     }
     private void createLevel1() {
+        // Platform
         platforms.add(new Platform(200, 450, 150, 25));
         platforms.add(new Platform(420, 400, 100, 25));
         platforms.add(new Platform(620, 240, 120, 25));
         platforms.add(new Platform(600, 400, 300, 200));
-
+        // xu
         coins.add(new Coin(250, 360, 25));
         coins.add(new Coin(480, 280, 25));
         coins.add(new Coin(660, 200, 25));
-
+        // enemy
         enemies.add(new Enemy(300, 570, 40, 30, 200, 500));
         enemies.add(new Enemy(650, 370, 40, 30, 600, 900));
     }

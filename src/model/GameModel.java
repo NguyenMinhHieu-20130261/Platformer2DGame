@@ -2,7 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import factory.LevelFactory;
-import collision.CollisionManager;
+import service.CollisionManager;
 
 public class GameModel {
     private Player player;
@@ -26,10 +26,9 @@ public class GameModel {
         platforms = new ArrayList<>();
         coins = new ArrayList<>();
         enemies = new ArrayList<>();
-        levelFactory = new LevelFactory(platforms, coins, enemies);
         collisionManager = new CollisionManager();
         loadCurrentLevel();
-        
+        levelFactory = new LevelFactory(platforms, coins, enemies);
     }
     private void loadCurrentLevel() {
         levelFactory.createLevel(currentLevel);
@@ -54,11 +53,9 @@ public class GameModel {
         }
         updateEnemies();
         boolean touchingEnemy = collisionManager.checkEnemyCollision(player, enemies);
-
         if (touchingEnemy) {
             loseLife();
         }
-
         player.limitInScreen(screenWidth);
     }
     private void updateEnemies() {

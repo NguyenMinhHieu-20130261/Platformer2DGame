@@ -1,4 +1,4 @@
-package collision;
+package service;
 
 import java.util.ArrayList;
 
@@ -8,9 +8,6 @@ import model.Platform;
 import model.Player;
 
 public class CollisionManager {
-    private Player player;
-    private ArrayList<Enemy> enemies;
-    private ArrayList<Coin> coins;
     // Check va chạm với platform
     public void checkPlatformCollision(Player player, ArrayList<Platform> platforms) {
         int rightSide = player.getX() + player.getWidth();
